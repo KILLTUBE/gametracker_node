@@ -1,3 +1,5 @@
+dgram = require("udp");
+
 master = dgram.createSocket("udp4");
 
 master.on("message", function(msg, rinfo) {

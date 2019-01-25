@@ -1,3 +1,5 @@
+dgram = require("dgram");
+
 
 var gameservers = new Object();
 client = dgram.createSocket("udp4");

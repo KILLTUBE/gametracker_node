@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "tsc.js",
+        "sourceMap": true,
+        "allowJs": true,
+        "checkJs": true
+    },
+    "include": [
+        "*"
+	],
+	"types": [
+		"node",
+		"mysql"
+	]
+}
