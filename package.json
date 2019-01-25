@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kungfooman/gametracker_node/issues"
   },
-  "homepage": "https://github.com/kungfooman/gametracker_node#readme"
+  "homepage": "https://github.com/kungfooman/gametracker_node#readme",
+  "dependencies": {
+    "mysql": "^2.16.0"
+  }
 }
