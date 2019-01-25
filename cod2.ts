@@ -1,20 +1,22 @@
-function parse_cvars_2(str) {
-	cvars = new Object(); // to use as assoc array
-	split = str.split("\\");
+import { str_replace } from "./php";
+
+export function parse_cvars_2(str: string) {
+	var cvars: {[key: string]: string} = {};
+	var split = str.split("\\");
 	for (var i=1; i<split.length; i+=2) {
-		key = split[i];
-		value = split[i+1];
+		var key = split[i];
+		var value = split[i+1];
 		cvars[key] = value;
 	}
 	return cvars;
 }
 
-function cod2_parse_status($status) {
+export function cod2_parse_status($status: string) {
 	// $parts[0] = \xFF\xFF\xFF\xFFstatusResponse
 	// $parts[1] = \fs_game\bots\g_antilag\1\g_gametype\tdm
 	// $parts[...] = 0 37 "^^00S^^33uicide^^00C^^33ommando"
 	// so atleast 2 elements, else something failed
-	$parts = $status.split("\n");
+	var $parts = $status.split("\n");
 	
 	// figure out some possible errors
 	if ($parts.length < 2)
@@ -23,10 +25,10 @@ function cod2_parse_status($status) {
 		return false;
 
 	// parse the players
-	$players = new Array();
-	$len = $parts.length - 1; // -1 for the \n behind every player
-	for ($i=2; $i<$len; $i++) {
-		$line = $parts[$i];
+	var $players = new Array();
+	var $len = $parts.length - 1; // -1 for the \n behind every player
+	for (var $i=2; $i<$len; $i++) {
+		var $line = $parts[$i];
 		
 		/*
 		$tmp = explode("\x20", $parts[$i]);
@@ -35,12 +37,12 @@ function cod2_parse_status($status) {
 		$name = substr($tmp[2], 1, -1); // remove the quotation marks like: "<name>"
 		*/
 		
-		$tmp = $line.split("\"");
-		$before = $tmp[0];
-		$tmp2 = $before.split(" ");
-		$score = $tmp2[0];
-		$ping = parseInt($tmp2[1]);
-		$name = $tmp[1];
+		var $tmp = $line.split("\"");
+		var $before = $tmp[0];
+		var $tmp2 = $before.split(" ");
+		var $score = $tmp2[0];
+		var $ping = parseInt($tmp2[1]);
+		var $name = $tmp[1];
 		
 		$players.push({
 			"score": $score,
@@ -54,8 +56,7 @@ function cod2_parse_status($status) {
 	}
 }
 
-function strip_colorcodes(text)
-{
+export function strip_colorcodes(text: string) {
 	text = str_replace("^0", "", text);
 	text = str_replace("^1", "", text);
 	text = str_replace("^2", "", text);
@@ -78,7 +79,7 @@ function strip_colorcodes(text)
 	text = str_replace("^8", "", text);
 	text = str_replace("^9", "", text);
 	
-	// yes twice, because some idiots are to stupid
+	// yes twice, because some idiots are too stupid
 	// (e.g. that double-colors just make sense for names ingame / just making ONE ^)
 	return text;
 }

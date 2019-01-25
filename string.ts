@@ -1,4 +1,4 @@
-function strpadLeftOneZero(str) {
+export function strpadLeftOneZero(str: string) {
 	if (str.length == 0)
 		return "00";
 	if (str.length == 1)
@@ -6,13 +6,11 @@ function strpadLeftOneZero(str) {
 	return str;
 }
 
-function binary_escape(str) {
+export function binary_escape(str: string) {
 	var tmp = "";
-	for (var i=0; i<str.length; i++)
-	{
-		char = str[i];
-		ord = str.charCodeAt(i);
-
+	for (var i=0; i<str.length; i++) {
+		var char = str[i];
+		var ord = str.charCodeAt(i);
 		if (
 			(ord >= 0 && ord <= 31) ||
 			(ord >= 127 && ord <= 255)
@@ -37,7 +35,7 @@ function binary_escape(str) {
 	return tmp;
 }
 
-function newBufferBinary(str) {
+export function newBufferBinary(str: string) {
 	var buf = new Buffer(str.length);
 	for (var i=0; i<str.length; i++)
 		buf[i] = str.charCodeAt(i);

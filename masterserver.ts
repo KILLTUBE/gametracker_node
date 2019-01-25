@@ -1,17 +1,18 @@
-dgram = require("udp");
+import { Globals } from "./Globals";
+import { updateGameserver } from "./gameservers";
 
-master = dgram.createSocket("udp4");
+Globals.master = Globals.dgram.createSocket("udp4");
 
-master.on("message", function(msg, rinfo) {
+Globals.master.on("message", function(msg, rinfo) {
 	//var ip = rinfo.address;
 	//var port = rinfo.port;
-	ip = rinfo.address;
-	port = rinfo.port;
-	response = msg.toString("binary");
+	var ip = rinfo.address;
+	var port = rinfo.port;
+	var response = msg.toString("binary");
 	
-	expectHeader = "\xFF\xFF\xFF\xFFgetserversResponse\x0A\x00";
-	expectFootA = "\\EOT";
-	expectFootB = "\\EOF";
+	var expectHeader = "\xFF\xFF\xFF\xFFgetserversResponse\x0A\x00";
+	var expectFootA = "\\EOT";
+	var expectFootB = "\\EOF";
 	/*
 	if (expectHeader == response.substr(0,expectHeader.length))
 		console.log("header looks good!");
@@ -25,24 +26,24 @@ master.on("message", function(msg, rinfo) {
 	//ips = response.substr(expectHeader.length); // cut the front
 	//ips = ips.substr(0, ips.length-expectFootA.length); // cut the back
 	
-	start = expectHeader.length;
-	end = response.length - expectFootA.length;
+	var start = expectHeader.length;
+	var end = response.length - expectFootA.length;
 	// format is: /iiiipp -->> 1 slash, 4 bytes ip, 2 bytes port
-	count = 0;
+	var count = 0;
 	
 	for (var i=start; i<end; i+=7)
 	{
-		a = response.charCodeAt(i+1);
-		b = response.charCodeAt(i+2);
-		c = response.charCodeAt(i+3);
-		d = response.charCodeAt(i+4);
+		var a = response.charCodeAt(i+1);
+		var b = response.charCodeAt(i+2);
+		var c = response.charCodeAt(i+3);
+		var d = response.charCodeAt(i+4);
 		ip = a+"."+b+"."+c+"."+d;
 		
 		port = 1337;
 		
 		// real-binary(\xFF) to dec
-		portA = strpadLeftOneZero(response.charCodeAt(i+5).toString(16));
-		portB = strpadLeftOneZero(response.charCodeAt(i+6).toString(16));
+		var portA = strpadLeftOneZero(response.charCodeAt(i+5).toString(16));
+		var portB = strpadLeftOneZero(response.charCodeAt(i+6).toString(16));
 		port = parseInt(portA + portB, 16);
 		//console.log(ip + ":" + port);
 		
@@ -96,44 +97,41 @@ master.on("message", function(msg, rinfo) {
 	//console.log(rinfo.address + ":" + rinfo.port + "= all fine for " + ip + ":" + port);
 });
 
-master.on("error", function(err){
+Globals.master.on("error", function(err){
 	console.log("UDP-Socket: ERROR! " + err);
 });
 
-master.on("close", function(){
+Globals.master.on("close", function(){
 	console.log("UDP-Socket: CLOSE!");
 });
-master.on("listening", function(){
+
+Globals.master.on("listening", function(){
 	console.log("UDP-Socket: LISTENING!");
 });
-master.on("end", function(){
+
+Globals.master.on("end", function(){
 	console.log("UDP-Socket: END!");
 });
 
-function queryUDP(ip, port, id)
-{
+export function queryUDP(ip: any, port: any, id: any) {
 	var message = newBufferBinary("\xFF\xFF\xFF\xFFgetservers " + id + " full empty");
-	master.send(message, 0, message.length, port, ip, function(err, bytes) {
+	Globals.master.send(message, 0, message.length, port, ip, function(err, bytes) {
 		//console.log("master.send: test bytes="+bytes + "err=" + err);
 		//console.log("master.send: " + message + " ");
 	});
 }
 
-function queryMasterserver()
-{
+export function queryMasterserver() {
 	queryUDP("cod2master.activision.com", 20710, 115); // 1.0
 	queryUDP("cod2master.activision.com", 20710, 117); // 1.2
 	queryUDP("cod2master.activision.com", 20710, 118); // 1.3
-	
 	console.log("UPDATED SERVERS FROM MASTER!");
 	setTimeout(queryMasterserver, 1000 * 10); // all ten seconds
 }
 
-
-function deleteCrapServers()
-{
+export function deleteCrapServers() {
 	// if a server doesnt answered in ONE HOUR, hes gone.. (*24 == a day now)
-	mysql.query("DELETE FROM servers WHERE last_actualize < unix_timestamp()-60*60*1*24", function(err, result, fields) {
+	Globals.mysql.query("DELETE FROM servers WHERE last_actualize < unix_timestamp()-60*60*1*24", function(err, result, fields) {
 		if (err)
 		{
 			console.log(err);
