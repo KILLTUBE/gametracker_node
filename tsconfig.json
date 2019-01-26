@@ -11,7 +11,7 @@
 		"outDir" : "./ts_to_js/",
     },
     "include": [
-        "*"
+        "ts/*"
 	],
 	"types": [
 		"node",
