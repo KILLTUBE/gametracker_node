@@ -21,7 +21,7 @@ export function main() {
     debug = false;
     if (debug) {
         fakeport = 666;
-        updateGameserver("85.25.95.104", "28968");
+        updateGameserver("85.25.95.104", 28968);
     }
     else {
         updateAll();

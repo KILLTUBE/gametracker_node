@@ -5,7 +5,7 @@ import { binary_escape, newBufferBinary } from "./string";
 export function gameservers_init() {
     State.gameservers = {};
     State.client = State.dgram.createSocket("udp4");
-    var message = newBufferBinary("\xff\xff\xff\xffGetstatus");
+    State.message = newBufferBinary("\xff\xff\xff\xffGetstatus");
     State.client.on("message", function (msg, rinfo) {
         var ip = rinfo.address;
         var port = rinfo.port;
@@ -113,7 +113,7 @@ export function updateGameserver(ip, port) {
     }
     State.gameservers[ip][port].lastRequest = now();
     try {
-        State.client.send(message, 0, message.length, port, ip, function (err, bytes) {
+        State.client.send(State.message, 0, State.message.length, port, ip, function (err, bytes) {
         });
     }
     catch (e) {
@@ -137,9 +137,9 @@ export function updateAll() {
 }
 export function updateWithoutMysql() {
     for (var ip_ in State.gameservers) {
-        var gameserver = State.gameservers[ip_];
-        for (var port_ in gameserver) {
-            updateGameserver(ip_, port_);
+        var ports = State.gameservers[ip_];
+        for (var port_ in ports) {
+            updateGameserver(ip_, Number(port_));
         }
     }
     setTimeout(updateWithoutMysql, 1000 * 1);
