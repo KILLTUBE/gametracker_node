@@ -6,9 +6,9 @@ var Gameserver = (function () {
     return Gameserver;
 }());
 export { Gameserver };
-var Globals = (function () {
-    function Globals() {
+var State = (function () {
+    function State() {
     }
-    return Globals;
+    return State;
 }());
-export { Globals };
+export { State };

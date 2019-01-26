@@ -16,7 +16,7 @@ interface Gameservers {
 	};
 }
 
-export class Globals {
+export class State {
 	public static dgram: any;
 	public static fs: any;
 	public static mysql: Connection;

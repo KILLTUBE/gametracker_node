@@ -1,18 +1,21 @@
-import { Globals, Gameserver } from "./Globals";
+import { State, Gameserver } from "./Globals";
 import { now, time } from "./time";
 import { cod2_parse_status, strip_colorcodes } from "./cod2";
-import { binary_escape } from "./string";
+import { binary_escape, newBufferBinary } from "./string";
 
-Globals.gameservers = {};
 
-Globals.client = Globals.dgram.createSocket("udp4");
-//client.setMaxListeners(0); // infinite
+export function gameservers_init() {
+
+	State.gameservers = {};
+
+	State.client = State.dgram.createSocket("udp4");
+	//client.setMaxListeners(0); // infinite
 
 
 	//var message = new Buffer("\xff\xff\xff\xffgetstatus", 'binary'); // depricated -.-
 	var message = newBufferBinary("\xff\xff\xff\xffGetstatus");
 	
-	Globals.client.on("message", function(msg, rinfo) {
+	State.client.on("message", function(msg, rinfo) {
 		// using extra-vars for it caused errors -.-
 		// they are interchanged on context-switches or so
 		var ip = rinfo.address;
@@ -28,8 +31,8 @@ Globals.client = Globals.dgram.createSocket("udp4");
 		// LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL
 		// some asshole is sending own packet to this socket -> not in list = crash
 		// lets see what he wrote!
-		if (typeof Globals.gameservers[ip] == "undefined" ||
-			typeof Globals.gameservers[ip][port] == "undefined" // LOL, here he even faked packet FROM REAL SERVER (or just from it), so i had to extend the if
+		if (typeof State.gameservers[ip] == "undefined" ||
+			typeof State.gameservers[ip][port] == "undefined" // LOL, here he even faked packet FROM REAL SERVER (or just from it), so i had to extend the if
 		)
 		{
 			// SOME NETHERLANDER SPAMMED with gameserverquery-response xD
@@ -39,10 +42,10 @@ Globals.client = Globals.dgram.createSocket("udp4");
 		}
 		
 		
-		Globals.gameservers[ip][port].lastUpdate = now();
+		State.gameservers[ip][port].lastUpdate = now();
 		
 		// i query all 4 seconds, and if the packet needs more then 1s, then i cant provide each 5s a new packet
-		var server_ping = Globals.gameservers[ip][port].lastUpdate - Globals.gameservers[ip][port].lastRequest;
+		var server_ping = State.gameservers[ip][port].lastUpdate - State.gameservers[ip][port].lastRequest;
 		if (server_ping > 1000)
 			console.log("hitch warning for " + ip + ":" + port + " "+server_ping+"ms");
 		
@@ -96,12 +99,12 @@ Globals.client = Globals.dgram.createSocket("udp4");
 		}
 		var version = status.cvars.shortversion;
 		
-		if (Globals.debug)
+		if (State.debug)
 			console.log("game="+game + " hostname="+hostname + " map="+map + " gametype="+gametype + " fs_game="+fs_game + " players="+players + " max_players="+max_players + " average_ping="+average_ping + " version="+version);
 		
 		var binary_response = binary_escape(response);
 		//console.log(binary_response);
-		Globals.mysql.query("	\
+		State.mysql.query("	\
 				INSERT INTO	\
 					servers/*_debug*/ (ip, port, time_added, last_actualize, status,  game, map, hostname, gametype, fs_game, players, max_players, average_ping, version, hostname_nocolor, protocol, password, anticheat, server_ping)	\
 				VALUES	\
@@ -145,30 +148,30 @@ Globals.client = Globals.dgram.createSocket("udp4");
 		//console.log(rinfo.address + ":" + rinfo.port + "= all fine for " + ip + ":" + port);
 	});
 
-	Globals.client.on("error", function(err){
+	State.client.on("error", function(err){
 		console.log("UDP-Socket: ERROR! " + err);
 	});
 	
-	Globals.client.on("close", function(){
+	State.client.on("close", function(){
 		console.log("UDP-Socket: CLOSE!");
 	});
-	Globals.client.on("listening", function(){
+	State.client.on("listening", function(){
 		console.log("UDP-Socket: LISTENING!");
 	});
-	Globals.client.on("end", function(){
+	State.client.on("end", function(){
 		console.log("UDP-Socket: END!");
 	});
-
+}
 
 export function updateGameserver(ip: string, port: string/*, fakeport*/) // fakeport is global now, because cant get it through the event -.-
 {
-	if (typeof Globals.gameservers[ip] == "undefined")
-		Globals.gameservers[ip] = {}; // assoc array
-	if (typeof Globals.gameservers[ip][port] == "undefined")
-		Globals.gameservers[ip][port] = new Gameserver; // assoc array
+	if (typeof State.gameservers[ip] == "undefined")
+		State.gameservers[ip] = {}; // assoc array
+	if (typeof State.gameservers[ip][port] == "undefined")
+		State.gameservers[ip][port] = new Gameserver; // assoc array
 		
-	var deltaUpdate = now() - Globals.gameservers[ip][port].lastUpdate;
-	var deltaRequest = now() - Globals.gameservers[ip][port].lastRequest;
+	var deltaUpdate = now() - State.gameservers[ip][port].lastUpdate;
+	var deltaRequest = now() - State.gameservers[ip][port].lastRequest;
 	
 	if (deltaUpdate < 4000 || deltaRequest < 4000) {
 		//console.log("no need for update, deltaUpdate=" + deltaUpdate);
@@ -182,7 +185,7 @@ export function updateGameserver(ip: string, port: string/*, fakeport*/) // fake
 	
 	//console.log(ip + ":" + port + " deltaUpdate=" + deltaUpdate + " deltaRequest=" + deltaRequest);
 	
-	Globals.gameservers[ip][port].lastRequest = now();
+	State.gameservers[ip][port].lastRequest = now();
 	
 	
 	/*
@@ -213,7 +216,7 @@ RangeError: Port should be > 0 and < 65536
 	
 	//client._bound = true; // lol fake
 	try {
-		Globals.client.send(message, 0, message.length, port, ip, function(err, bytes) {
+		State.client.send(message, 0, message.length, port, ip, function(err, bytes) {
 			//console.log("client.send: test bytes="+bytes + "err=" + err);
 			//console.log("client.send: " + message + " ");
 		});
@@ -227,7 +230,7 @@ export function updateAll() {
 	// thought that would be faster, but its just more queries = slower
 	// WHERE last_actualize + 2 < " + time() + " 
 	// hm, without its 19% cpu and with filter its 15%
-	Globals.mysql.query("SELECT ip, port FROM servers/*_debug*/ ORDER BY last_actualize ASC", function(err, result, fields) {
+	State.mysql.query("SELECT ip, port FROM servers/*_debug*/ ORDER BY last_actualize ASC", function(err, result, fields) {
 		if (err)
 		{
 			console.log(err);
@@ -255,8 +258,8 @@ export function updateWithoutMysql() {
 	// might be usefull to debug, but its spamming every second
 	//console.log("updateWithoutMysql()");
 	
-	for (var ip_ in Globals.gameservers) {
-		var gameserver = Globals.gameservers[ip_];
+	for (var ip_ in State.gameservers) {
+		var gameserver = State.gameservers[ip_];
 		
 		for (var port_ in gameserver) {
 			//console.log(ip + ":" + port);

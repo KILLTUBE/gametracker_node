@@ -1,12 +1,13 @@
-import { Globals } from "./Globals";
-import { MysqlError } from "mysql";
-import { updateGameserver, updateAll } from "./gameservers";
-import { deleteCrapServers, queryMasterserver } from "./masterserver";
+import { State } from "./Globals";
+//import { MysqlError } from "mysql";
+import { updateGameserver, updateAll, gameservers_init } from "./gameservers";
+import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver";
+import { mysql_sock, mysql_user, mysql_pass, mysql_database } from "./config";
 
-Globals.dgram = require("dgram");
-Globals.fs = require('fs');
+State.dgram = require("dgram");
+State.fs = require('fs');
 
-Globals.mysql = require("mysql").createConnection({
+State.mysql = require("mysql").createConnection({
 	//host: mysql_host,
 	//port: mysql_port,
 	socketPath: mysql_sock,
@@ -16,13 +17,14 @@ Globals.mysql = require("mysql").createConnection({
 var fakeport = undefined; // make global
 var debug = undefined;
 
-Globals.mysql.query("USE " + mysql_database, function(err: MysqlError) {
+State.mysql.query("USE " + mysql_database, function(err: MysqlError) {
 	main();
 });
 
 export function main() {
 	console.log("READY TO FIGHT");
-	
+	gameservers_init();
+	masterserver_init();
 	debug = false;
 	//debug = true;
 	if (debug)
@@ -44,7 +46,7 @@ export function repl() {
 	require('repl').start({
 		input: process.stdin,
 		output: process.stdout,
-		'eval': function (cmd, context, filename, callback) {
+		'eval': function (cmd: any, context: any, filename: any, callback: any) {
 			console.log(buffer);
 			try {
 				callback(null, eval(buffer));
