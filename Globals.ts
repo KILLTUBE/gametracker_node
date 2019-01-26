@@ -1,5 +1,5 @@
 import { Connection } from "mysql";
-import { Socket } from "net";
+import { Socket as SocketUDP} from "dgram";
 
 export class Gameserver {
 	lastUpdate: number;
@@ -12,7 +12,7 @@ export class Gameserver {
 
 interface Gameservers {
 	[ip: string]: {
-		[port: string]: Gameserver;
+		[port: number]: Gameserver;
 	};
 }
 
@@ -21,8 +21,8 @@ export class State {
 	public static fs: any;
 	public static mysql: Connection;
 	public static gameservers: Gameservers;
-	public static client: Socket;
-	public static master: Socket;
+	public static client: SocketUDP;
+	public static master: SocketUDP;
 	public static debug: boolean;
-	
+	public static message: Buffer;
 }

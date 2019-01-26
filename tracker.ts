@@ -1,5 +1,5 @@
 import { State } from "./Globals";
-//import { MysqlError } from "mysql";
+import { MysqlError } from "mysql";
 import { updateGameserver, updateAll, gameservers_init } from "./gameservers";
 import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver";
 import { mysql_sock, mysql_user, mysql_pass, mysql_database } from "./config";
@@ -30,7 +30,7 @@ export function main() {
 	if (debug)
 	{
 		fakeport = 666;
-		updateGameserver("85.25.95.104", "28968");
+		updateGameserver("85.25.95.104", 28968);
 	} else {
 		updateAll();
 		deleteCrapServers();

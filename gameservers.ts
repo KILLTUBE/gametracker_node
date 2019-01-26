@@ -13,7 +13,7 @@ export function gameservers_init() {
 
 
 	//var message = new Buffer("\xff\xff\xff\xffgetstatus", 'binary'); // depricated -.-
-	var message = newBufferBinary("\xff\xff\xff\xffGetstatus");
+	State.message = newBufferBinary("\xff\xff\xff\xffGetstatus");
 	
 	State.client.on("message", function(msg, rinfo) {
 		// using extra-vars for it caused errors -.-
@@ -163,7 +163,7 @@ export function gameservers_init() {
 	});
 }
 
-export function updateGameserver(ip: string, port: string/*, fakeport*/) // fakeport is global now, because cant get it through the event -.-
+export function updateGameserver(ip: string, port: number/*, fakeport*/) // fakeport is global now, because cant get it through the event -.-
 {
 	if (typeof State.gameservers[ip] == "undefined")
 		State.gameservers[ip] = {}; // assoc array
@@ -216,7 +216,7 @@ RangeError: Port should be > 0 and < 65536
 	
 	//client._bound = true; // lol fake
 	try {
-		State.client.send(message, 0, message.length, port, ip, function(err, bytes) {
+		State.client.send(State.message, 0, State.message.length, port, ip, function(err, bytes) {
 			//console.log("client.send: test bytes="+bytes + "err=" + err);
 			//console.log("client.send: " + message + " ");
 		});
@@ -257,16 +257,13 @@ export function updateAll() {
 export function updateWithoutMysql() {
 	// might be usefull to debug, but its spamming every second
 	//console.log("updateWithoutMysql()");
-	
 	for (var ip_ in State.gameservers) {
-		var gameserver = State.gameservers[ip_];
-		
-		for (var port_ in gameserver) {
+		var ports = State.gameservers[ip_];
+		for (var port_ in ports) {
 			//console.log(ip + ":" + port);
-			updateGameserver(ip_, port_);
+			updateGameserver(ip_, Number(port_));
 		}
 		
 	}
-	
 	setTimeout(updateWithoutMysql, 1000 * 1);
 }

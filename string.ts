@@ -1,4 +1,4 @@
-export function strpadLeftOneZero(str: string) {
+export function strpadLeftOneZero(str: string): string {
 	if (str.length == 0)
 		return "00";
 	if (str.length == 1)
@@ -6,7 +6,7 @@ export function strpadLeftOneZero(str: string) {
 	return str;
 }
 
-export function binary_escape(str: string) {
+export function binary_escape(str: string): string {
 	var tmp = "";
 	for (var i=0; i<str.length; i++) {
 		var char = str[i];
@@ -35,7 +35,7 @@ export function binary_escape(str: string) {
 	return tmp;
 }
 
-export function newBufferBinary(str: string) {
+export function newBufferBinary(str: string): Buffer {
 	var buf = new Buffer(str.length);
 	for (var i=0; i<str.length; i++)
 		buf[i] = str.charCodeAt(i);
