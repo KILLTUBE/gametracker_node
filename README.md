@@ -1,22 +1,34 @@
-# Gameserver Tracker
+# gametracker
 
-Supported games: 
+Supported game servers:
+
  - Call Of Duty 2
 
 Install:
- - Install nodejs
+
+ - Install nodejs and npm
+
+		apt-get install nodejs
+		apt-get install libssl1.0-dev
+		apt-get install nodejs-dev
+		apt-get install node-gyp
+		apt-get install npm
+		npm update
+		npm upgrade
+
  - Import the `tracker.sql` into your MySQL database
 
 		mysql -u some_user -p
-		CREATE DATABASE tracker;
-		GRANT ALL PRIVILEGES ON `tracker`.* to `some_user`@localhost;
-		flush privileges;
-		use tracker
+		CREATE DATABASE gametracker;
+		GRANT ALL PRIVILEGES ON `gametracker`.* to `some_user`@localhost;
+		FLUSH PRIVILEGES;
+		USE gametracker;
 		source /home/some_user/tracker/tracker.sql
 
- - run `tracker.sh` in a `screen` session
- - open up the `public_html` folder directly with `mod_userdir` or point a subdomain to that dir
- - fill in the MySQL config data into `config_example.js` and `public_html\config_example.php` and remove the `_example`
+ - Fill in the MySQL config data into `config.ts` and
+
+ - Run `doit_start_gametracker.sh` in a `screen` session
 
 Live demo:
+
  - http://tracker.killtube.org

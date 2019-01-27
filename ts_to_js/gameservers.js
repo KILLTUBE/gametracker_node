@@ -14,8 +14,9 @@ export function gameservers_init() {
             typeof State.gameservers[ip][port] == "undefined") {
             return;
         }
-        State.gameservers[ip][port].lastUpdate = now();
-        var server_ping = State.gameservers[ip][port].lastUpdate - State.gameservers[ip][port].lastRequest;
+        var gameserver = State.gameservers[ip][port];
+        gameserver.lastUpdate = now();
+        var server_ping = gameserver.lastUpdate - gameserver.lastRequest;
         if (server_ping > 1000)
             console.log("hitch warning for " + ip + ":" + port + " " + server_ping + "ms");
         var status = cod2_parse_status(response);
@@ -40,7 +41,10 @@ export function gameservers_init() {
             for (var i = 0; i < players; i++) {
                 if (isNaN(status.players[i]["ping"]))
                     continue;
-                if (status.players[i]["name"].substr(0, 3) != "bot" && status.players[i]["ping"] == 999)
+                var ping = status.players[i]["ping"];
+                if (ping == 0)
+                    continue;
+                if (ping == 999)
                     continue;
                 average_ping += status.players[i]["ping"];
                 counted++;
