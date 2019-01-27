@@ -1,2 +1,5 @@
 node_modules
 tmp.js
+config.ts
+ts_to_js/config.js
+
