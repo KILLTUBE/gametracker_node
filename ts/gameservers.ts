@@ -41,11 +41,11 @@ export function gameservers_init() {
 			return;
 		}
 		
-		
-		State.gameservers[ip][port].lastUpdate = now();
+		var gameserver = State.gameservers[ip][port];
+		gameserver.lastUpdate = now();
 		
 		// i query all 4 seconds, and if the packet needs more then 1s, then i cant provide each 5s a new packet
-		var server_ping = State.gameservers[ip][port].lastUpdate - State.gameservers[ip][port].lastRequest;
+		var server_ping = gameserver.lastUpdate - gameserver.lastRequest;
 		if (server_ping > 1000)
 			console.log("hitch warning for " + ip + ":" + port + " "+server_ping+"ms");
 		
@@ -85,7 +85,11 @@ export function gameservers_init() {
 				if (isNaN(status.players[i]["ping"]))
 					continue;
 				// IF NOT BOT BUT 999 PING:
-				if (status.players[i]["name"].substr(0,3) != "bot" && status.players[i]["ping"] == 999) // dont count connection-interrupt/connecting
+				var ping = status.players[i]["ping"];
+				//if (status.players[i]["name"].substr(0,3) != "bot" && status.players[i]["ping"] == 999) // dont count connection-interrupt/connecting
+				if (ping == 0)
+					continue;
+				if (ping == 999)
 					continue;
 				average_ping += status.players[i]["ping"];
 				//console.log("i="+i + " ping=" + status.players[i]["ping"] + " avr="+average_ping); // had bug, concated strings instead of adding
