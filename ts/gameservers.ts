@@ -78,8 +78,10 @@ export function gameservers_init() {
 		var protocol = status.cvars.protocol;
 		var password = status.cvars.pswrd;
 		var anticheat = status.cvars.sv_punkbuster;
-		if (max_players) {
-			var counted = 0;
+		
+		//if (max_players)
+		{
+			var num_valid_players = 0;
 			for (var i=0; i<players; i++)
 			{
 				if (isNaN(status.players[i]["ping"]))
@@ -94,10 +96,13 @@ export function gameservers_init() {
 				average_ping += status.players[i]["ping"];
 				//console.log("i="+i + " ping=" + status.players[i]["ping"] + " avr="+average_ping); // had bug, concated strings instead of adding
 				
-				counted++;
+				num_valid_players++;
 			}
-			if (counted)
-				average_ping /= counted;
+			if (num_valid_players)
+				average_ping /= num_valid_players;
+			
+			// reduce bots from player count
+			players = num_valid_players;
 			//if (players != counted)
 			//	console.log("players="+players + " counted=" + counted);
 		}

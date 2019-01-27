@@ -36,8 +36,8 @@ export function gameservers_init() {
         var protocol = status.cvars.protocol;
         var password = status.cvars.pswrd;
         var anticheat = status.cvars.sv_punkbuster;
-        if (max_players) {
-            var counted = 0;
+        {
+            var num_valid_players = 0;
             for (var i = 0; i < players; i++) {
                 if (isNaN(status.players[i]["ping"]))
                     continue;
@@ -47,10 +47,11 @@ export function gameservers_init() {
                 if (ping == 999)
                     continue;
                 average_ping += status.players[i]["ping"];
-                counted++;
+                num_valid_players++;
             }
-            if (counted)
-                average_ping /= counted;
+            if (num_valid_players)
+                average_ping /= num_valid_players;
+            players = num_valid_players;
         }
         var version = status.cvars.shortversion;
         if (State.debug)
