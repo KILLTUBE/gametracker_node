@@ -27,7 +27,7 @@ Install:
 
  - Fill in the MySQL config data into `config.ts` and
 
- - Run `doit_start_gametracker.sh` in a `screen` session
+ - Run `npm run start` in a `screen` session
 
 Live demo:
 
