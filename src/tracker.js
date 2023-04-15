@@ -1,8 +1,7 @@
-import { State } from "./Globals";
-import { MysqlError } from "mysql";
-import { updateGameserver, updateAll, gameservers_init } from "./gameservers";
-import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver";
-import { mysql_sock, mysql_user, mysql_pass, mysql_database } from "./config";
+import { State                                                   } from "./Globals.js";
+import { updateGameserver, updateAll, gameservers_init           } from "./gameservers.js";
+import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver.js";
+import { mysql_sock, mysql_user, mysql_pass, mysql_database      } from "./config.js";
 State.dgram = require("dgram");
 State.fs = require('fs');
 State.mysql = require("mysql").createConnection({
@@ -14,7 +13,7 @@ State.mysql = require("mysql").createConnection({
 });
 var fakeport = undefined; // make global
 var debug = undefined;
-State.mysql.query("USE " + mysql_database, function(err: MysqlError) {
+State.mysql.query("USE " + mysql_database, function(err) {
   main();
 });
 export function main() {
@@ -41,7 +40,7 @@ export function repl() {
   require('repl').start({
     input: process.stdin,
     output: process.stdout,
-    'eval': function (cmd: any, context: any, filename: any, callback: any) {
+    'eval': function (cmd, context, filename, callback) {
       console.log(buffer);
       try {
         callback(null, eval(buffer));

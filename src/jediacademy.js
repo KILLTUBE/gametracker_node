@@ -9,7 +9,6 @@ master.on("message", function(msg, rinfo) {
   ip = rinfo.address;
   port = rinfo.port;
   response = msg.toString("binary");
-  
   expectHeader = "\xFF\xFF\xFF\xFFgetserversResponse\x0A\x00";
   expectFootA = "\\EOT";
   expectFootB = "\\EOF";
@@ -40,9 +39,7 @@ master.on("message", function(msg, rinfo) {
     portB = strpadLeftOneZero(response.charCodeAt(i+6).toString(16));
     port = parseInt(portA + portB, 16);
     //console.log(ip + ":" + port);
-    
     count++;
-    
     /*
     // IF I REPLACE it with normal comment, the whole comment closes = fail
     mysql.query("  \
@@ -70,7 +67,6 @@ master.on("message", function(msg, rinfo) {
   */
   console.log("ADD SERVER: " + count);
   //console.log("on.data: " + rinfo.address + ":" + rinfo.port + ": " + binary_escape(response));
-  
   /*
   codes = "";
   for (var i=0; i<response.length; i++)

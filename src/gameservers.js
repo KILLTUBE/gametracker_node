@@ -1,7 +1,7 @@
-import { State, Gameserver } from "./Globals";
-import { now, time } from "./time";
-import { cod2_parse_status, strip_colorcodes } from "./cod2";
-import { binary_escape, newBufferBinary } from "./string";
+import { State, Gameserver                   } from "./Globals.js";
+import { now, time                           } from "./time.js";
+import { cod2_parse_status, strip_colorcodes } from "./cod2.js";
+import { binary_escape, newBufferBinary      } from "./string.js";
 export function gameservers_init() {
   State.gameservers = {};
   State.client = State.dgram.createSocket("udp4");
@@ -143,14 +143,19 @@ export function gameservers_init() {
     console.log("UDP-Socket: END!");
   });
 }
-export function updateGameserver(ip: string, port: number/*, fakeport*/) // fakeport is global now, because cant get it through the event -.-
-{
-  if (typeof State.gameservers[ip] == "undefined")
+/**
+ * @param {string} ip - The IP.
+ * @param {number} port - The port.
+ */
+export function updateGameserver(ip, port/*, fakeport*/) { // fakeport is global now, because cant get it through the event -.-
+  if (typeof State.gameservers[ip] === "undefined") {
     State.gameservers[ip] = {}; // assoc array
-  if (typeof State.gameservers[ip][port] == "undefined")
+  }
+  if (typeof State.gameservers[ip][port] === "undefined") {
     State.gameservers[ip][port] = new Gameserver; // assoc array
-  var deltaUpdate = now() - State.gameservers[ip][port].lastUpdate;
-  var deltaRequest = now() - State.gameservers[ip][port].lastRequest;
+  }
+  const deltaUpdate  = now() - State.gameservers[ip][port].lastUpdate;
+  const deltaRequest = now() - State.gameservers[ip][port].lastRequest;
   if (deltaUpdate < 4000 || deltaRequest < 4000) {
     //console.log("no need for update, deltaUpdate=" + deltaUpdate);
     return;
@@ -204,9 +209,8 @@ export function updateAll() {
     }
     console.log("result.length=" + result.length);
     for (var i in result) {
-      var server = result[i];
-      var ip = server.ip;
-      var port = server.port;
+      const server = result[i];
+      const { ip, port } = server;
       updateGameserver(ip, port);
     }
     //console.log("DONE!");

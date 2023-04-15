@@ -1,6 +1,6 @@
-import { State } from "./Globals";
-import { updateGameserver } from "./gameservers";
-import { newBufferBinary, strpadLeftOneZero } from "./string";
+import { State                              } from "./Globals.js";
+import { updateGameserver                   } from "./gameservers.js";
+import { newBufferBinary, strpadLeftOneZero } from "./string.js";
 export function masterserver_init() {
   State.master = State.dgram.createSocket("udp4");
   State.master.on("message", function(msg, rinfo) {

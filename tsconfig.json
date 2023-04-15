@@ -1,17 +1,12 @@
 {
     "compilerOptions": {
         "module": "esnext",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        //"sourceMap": true,
         "allowJs": true,
         "checkJs": true,
-        //"outFile": "tsc.js",
-		"outDir" : "./ts_to_js/",
+        "strict": true
     },
     "include": [
-        "ts/*"
+        "src/*"
 	],
 	"types": [
 		"node",

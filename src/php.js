@@ -1,4 +1,11 @@
-export function str_replace(search: string, replace: string, subject: string, count?: any) {
+/**
+ * @param {string} search 
+ * @param {string} replace 
+ * @param {string} subject 
+ * @param {any} [count]
+ * @returns {string}
+ */
+export function str_replace(search, replace, subject, count) {
   var i = 0,
     j = 0,
     temp = '',
@@ -7,7 +14,7 @@ export function str_replace(search: string, replace: string, subject: string, co
     fl = 0,
     f = [].concat(search),
     r = [].concat(replace),
-    s: any = subject,
+    s = subject,
     ra = Object.prototype.toString.call(r) === '[object Array]',
     sa = Object.prototype.toString.call(s) === '[object Array]';
   s = [].concat(s);
