@@ -2,9 +2,9 @@
   "name": "gametracker_node",
   "version": "1.0.0",
   "description": "",
-  "main": "bla.js",
+  "main": "src/tracker.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/tracker.mjs"
   },
   "repository": {
     "type": "git",
@@ -19,11 +19,7 @@
   "dependencies": {
     "@types/mysql": "^2.15.5",
     "@types/node": "^10.12.18",
-    "babel": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
-    "mysql": "^2.16.0",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.2.4"
-  }
+    "mysql": "^2.16.0"
+  },
+  "type": "module"
 }
