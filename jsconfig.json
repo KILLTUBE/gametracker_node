@@ -2,7 +2,6 @@
     "compilerOptions": {
         "module": "esnext",
         "allowJs": true,
-        "checkJs": true,
         "strict": true
     },
     "include": [

@@ -3,7 +3,6 @@ import { now, time                           } from "./time.js";
 import { cod2_parse_status, strip_colorcodes } from "./cod2.js";
 import { binary_escape, newBufferBinary      } from "./string.js";
 export function gameservers_init() {
-  State.gameservers = {};
   State.client = State.dgram.createSocket("udp4");
   //client.setMaxListeners(0); // infinite
   //var message = new Buffer("\xff\xff\xff\xffgetstatus", 'binary'); // depricated -.-
@@ -11,11 +10,11 @@ export function gameservers_init() {
   State.client.on("message", function(msg, rinfo) {
     // using extra-vars for it caused errors -.-
     // they are interchanged on context-switches or so
-    var ip = rinfo.address;
-    var port = rinfo.port;
+    const ip = rinfo.address;
+    const port = rinfo.port;
     //ip = rinfo.address;
     //port = rinfo.port;
-    var response = msg.toString("binary");
+    const response = msg.toString("binary");
     //console.log("on.data: " + rinfo.address + ":" + rinfo.port + ": " + response.substr(0, 15));
     // LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL
     // some asshole is sending own packet to this socket -> not in list = crash
@@ -28,54 +27,56 @@ export function gameservers_init() {
       //console.log("GOT: \""+binary_escape(response)+"\"");
       return;
     }
-    var gameserver = State.gameservers[ip][port];
+    const gameserver = State.gameservers[ip][port];
     gameserver.lastUpdate = now();
     // i query all 4 seconds, and if the packet needs more then 1s, then i cant provide each 5s a new packet
-    var server_ping = gameserver.lastUpdate - gameserver.lastRequest;
+    const server_ping = gameserver.lastUpdate - gameserver.lastRequest;
     if (server_ping > 1000) {
       console.log("hitch warning for " + ip + ":" + port + " "+server_ping+"ms");
     }
     /*
-    
     if (typeof fakeport != "undefined")
       port = fakeport; // so i can debug without crap-output for customers
     */
     //if (response.substr(0, 4) == "\xFF\xFF\xFF\xFF")
     //  console.log("still binary here...");
-    var status = cod2_parse_status(response);
+    const status = cod2_parse_status(response);
     if (!status) {
       console.log("FAIL STATUS FOR " + rinfo.address + ":" + rinfo.port);
       return; // DO SOMETHING ELSE LIKE ANALYZE THE GAME
     }
     // TODO: abstract for ALL servers
-    var game = "cod2";
-    var map = status.cvars.mapname;
-    var hostname = status.cvars.sv_hostname;
-    var gametype = status.cvars.g_gametype;
-    var fs_game = status.cvars.fs_game;
-    var players = status.players.length;
-    var max_players = status.cvars.sv_maxclients;
-    var average_ping = 0;
-    var hostname_nocolor = strip_colorcodes(hostname);
-    var protocol = status.cvars.protocol;
-    var password = status.cvars.pswrd;
-    var anticheat = status.cvars.sv_punkbuster;
+    const game = "cod2";
+    const map = status.cvars.mapname;
+    const hostname = status.cvars.sv_hostname;
+    const gametype = status.cvars.g_gametype;
+    const fs_game = status.cvars.fs_game;
+    const players = status.players.length;
+    const max_players = status.cvars.sv_maxclients;
+    const hostname_nocolor = strip_colorcodes(hostname);
+    const protocol = status.cvars.protocol;
+    const password = status.cvars.pswrd;
+    const anticheat = status.cvars.sv_punkbuster;
+    let average_ping = 0;
     //if (max_players)
     {
-      var num_valid_players = 0;
-      for (var i=0; i<players; i++)
-      {
-        if (isNaN(status.players[i]["ping"]))
+      let num_valid_players = 0;
+      for (var i=0; i<players; i++) {
+        const player = status.players[i];
+        const { ping } = player;
+        if (isNaN(ping)) {
           continue;
+        }
         // IF NOT BOT BUT 999 PING:
-        var ping = status.players[i]["ping"];
-        //if (status.players[i]["name"].substr(0,3) != "bot" && status.players[i]["ping"] == 999) // dont count connection-interrupt/connecting
-        if (ping == 0)
+        //if (player["name"].substr(0,3) != "bot" && players["ping"] == 999) // dont count connection-interrupt/connecting
+        if (ping === 0) {
           continue;
-        if (ping == 999)
+        }
+        if (ping === 999) {
           continue;
-        average_ping += status.players[i]["ping"];
-        //console.log("i="+i + " ping=" + status.players[i]["ping"] + " avr="+average_ping); // had bug, concated strings instead of adding
+        }
+        average_ping += ping;
+        //console.log("i="+i + " ping=" + players["ping"] + " avr="+average_ping); // had bug, concated strings instead of adding
         num_valid_players++;
       }
       if (num_valid_players) {
@@ -222,9 +223,9 @@ export function updateAll() {
 export function updateWithoutMysql() {
   // might be usefull to debug, but its spamming every second
   //console.log("updateWithoutMysql()");
-  for (var ip_ in State.gameservers) {
-    var ports = State.gameservers[ip_];
-    for (var port_ in ports) {
+  for (const ip_ in State.gameservers) {
+    const ports = State.gameservers[ip_];
+    for (const port_ in ports) {
       //console.log(ip + ":" + port);
       updateGameserver(ip_, Number(port_));
     }

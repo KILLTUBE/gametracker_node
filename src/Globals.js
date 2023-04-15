@@ -17,7 +17,7 @@ export class State {
   /** @type {Connection} */
   static mysql;
   /** @type {Gameservers} */
-  static gameservers;
+  static gameservers = {};
   /** @type {SocketUDP} */
   static client;
   /** @type {SocketUDP} */
