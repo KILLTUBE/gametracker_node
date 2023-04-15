@@ -1,10 +1,14 @@
-import { State                                                   } from "./Globals.js";
-import { updateGameserver, updateAll, gameservers_init           } from "./gameservers.js";
-import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver.js";
-import { mysql_sock, mysql_user, mysql_pass, mysql_database      } from "./config.js";
-State.dgram = require("dgram");
-State.fs = require('fs');
-State.mysql = require("mysql").createConnection({
+import { State                                                   } from "./Globals.mjs";
+import { updateGameserver, updateAll, gameservers_init           } from "./gameservers.mjs";
+import { deleteCrapServers, queryMasterserver, masterserver_init } from "./masterserver.mjs";
+import { mysql_sock, mysql_user, mysql_pass, mysql_database      } from "./config.mjs";
+import * as dgram from "dgram";
+import * as fs from "fs";
+import * as mysql from "mysql";
+import * as repl from "repl";
+State.dgram = dgram;
+State.fs = fs;
+State.mysql = mysql.createConnection({
   //host: mysql_host,
   //port: mysql_port,
   socketPath: mysql_sock,
@@ -32,12 +36,12 @@ export function main() {
     queryMasterserver();
   }
 }
-export function repl() {
+export function startREPL() {
   var buffer = '';
   process.stdin.on('data', function(chunk) {
     buffer += chunk.toString('utf8');
   });
-  require('repl').start({
+  repl.start({
     input: process.stdin,
     output: process.stdout,
     'eval': function (cmd, context, filename, callback) {
@@ -51,4 +55,4 @@ export function repl() {
     }
   });
 }
-repl();
+startREPL();

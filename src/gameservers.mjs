@@ -1,7 +1,7 @@
-import { State, Gameserver                   } from "./Globals.js";
-import { now, time                           } from "./time.js";
-import { cod2_parse_status, strip_colorcodes } from "./cod2.js";
-import { binary_escape, newBufferBinary      } from "./string.js";
+import { State, Gameserver                   } from "./Globals.mjs";
+import { now, time                           } from "./time.mjs";
+import { cod2_parse_status, strip_colorcodes } from "./cod2.mjs";
+import { binary_escape, newBufferBinary      } from "./string.mjs";
 export function gameservers_init() {
   State.client = State.dgram.createSocket("udp4");
   //client.setMaxListeners(0); // infinite
@@ -51,7 +51,7 @@ export function gameservers_init() {
     const hostname = status.cvars.sv_hostname;
     const gametype = status.cvars.g_gametype;
     const fs_game = status.cvars.fs_game;
-    const players = status.players.length;
+    let players = status.players.length;
     const max_players = status.cvars.sv_maxclients;
     const hostname_nocolor = strip_colorcodes(hostname);
     const protocol = status.cvars.protocol;

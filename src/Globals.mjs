@@ -1,4 +1,4 @@
-import { Connection         } from "mysql";
+//import { Connection         } from "mysql";
 import { Socket as SocketUDP} from "dgram";
 export class Gameserver {
   lastUpdate = 0;

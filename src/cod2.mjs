@@ -1,4 +1,4 @@
-import { str_replace } from "./php.js";
+import { str_replace } from "./php.mjs";
 /**
  * @param {string} str 
  * @returns {Record<string, string>}

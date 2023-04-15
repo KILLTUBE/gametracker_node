@@ -1,6 +1,6 @@
-import { State                              } from "./Globals.js";
-import { updateGameserver                   } from "./gameservers.js";
-import { newBufferBinary, strpadLeftOneZero } from "./string.js";
+import { State                              } from "./Globals.mjs";
+import { updateGameserver                   } from "./gameservers.mjs";
+import { newBufferBinary, strpadLeftOneZero } from "./string.mjs";
 export function masterserver_init() {
   State.master = State.dgram.createSocket("udp4");
   State.master.on("message", function(msg, rinfo) {
@@ -91,8 +91,8 @@ export function masterserver_init() {
     console.log("UDP-Socket: END!");
   });
 }
-export function queryUDP(ip: any, port: any, id: any) {
-  var message = newBufferBinary("\xFF\xFF\xFF\xFFgetservers " + id + " full empty");
+export function queryUDP(ip, port, id) {
+  const message = newBufferBinary("\xFF\xFF\xFF\xFFgetservers " + id + " full empty");
   State.master.send(message, 0, message.length, port, ip, function(err, bytes) {
     //console.log("master.send: test bytes="+bytes + "err=" + err);
     //console.log("master.send: " + message + " ");

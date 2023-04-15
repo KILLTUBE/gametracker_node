@@ -10,5 +10,6 @@
 	"types": [
 		"node",
 		"mysql"
-	]
+	],
+    "type": "module"
 }
